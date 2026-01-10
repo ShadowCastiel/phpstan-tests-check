@@ -1,0 +1,24 @@
+parameters:
+    level: 0
+    paths:
+        - fixtures/NotCheckedService.php
+    parallel:
+        jobSize: 999999
+        maximumNumberOfProcesses: 1
+
+services:
+    -
+        class: ShadowCastiel\PHPStan\TestAttributes\TestAttributesExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+            - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+            - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+    -
+        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        arguments:
+            checkedClassPatterns: []
+            excludedMethods: []
+        tags:
+            - phpstan.rules.rule
+

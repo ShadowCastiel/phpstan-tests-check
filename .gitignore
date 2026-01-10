@@ -1,0 +1,17 @@
+/vendor/
+composer.lock
+.phpunit.result.cache
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+tests/.phpunit.cache/
+
+
+# PHP CS Fixer
+.php-cs-fixer.cache
+
+# Psalm
+.psalm/

@@ -1,0 +1,16 @@
+services:
+    -
+        class: ShadowCastiel\PHPStan\TestAttributes\TestAttributesExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+            - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+            - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+    -
+        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        arguments:
+            checkedClassPatterns: []
+            excludedMethods: []
+        tags:
+            - phpstan.rules.rule
+

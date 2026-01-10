@@ -1,0 +1,48 @@
+parameters:
+    level: 0
+    paths:
+        - fixtures
+    parallel:
+        jobSize: 999999
+        maximumNumberOfProcesses: 1
+
+services:
+    -
+        class: ShadowCastiel\PHPStan\TestAttributes\TestAttributesExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+            - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+            - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+    -
+        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        arguments:
+            checkedClassPatterns:
+                - 'Tests\\Fixtures\\*Service'
+                - 'Tests\\Fixtures\\ValidService'
+                - 'Tests\\Fixtures\\MissingAttributeService'
+                - 'Tests\\Fixtures\\MissingFilePathService'
+                - 'Tests\\Fixtures\\InvalidFilePathService'
+                - 'Tests\\Fixtures\\PathFormatsService'
+                - 'Tests\\Fixtures\\InvokeService'
+                - 'ShortNameService'
+                - 'Tests\\Fixtures\\ConcatPathService'
+                - 'Tests\\Fixtures\\MultipleAttributesService'
+            excludedMethods:
+                - '__construct'
+                - '__destruct'
+                - '__call'
+                - '__callStatic'
+                - '__get'
+                - '__set'
+                - '__isset'
+                - '__unset'
+                - '__sleep'
+                - '__wakeup'
+                - '__toString'
+                - '__set_state'
+                - '__clone'
+                - '__debugInfo'
+        tags:
+            - phpstan.rules.rule
+
