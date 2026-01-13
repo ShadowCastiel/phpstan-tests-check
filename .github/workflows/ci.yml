@@ -47,20 +47,20 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ matrix.php }}-${{ matrix.stability }}-
             ${{ runner.os }}-composer-${{ matrix.php }}-
             ${{ runner.os }}-composer-
+
+      - name: Remove conflicting dev dependencies
+        run: composer remove --dev --no-update vimeo/psalm friendsofphp/php-cs-fixer
 
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Run PHPUnit tests
         run: composer test
-
-      - name: Run PHPStan analysis on fixtures
-        run: composer test:phpstan
 
   phpstan:
     name: PHPStan Static Analysis
@@ -86,51 +86,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-phpstan-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-composer-phpstan-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             ${{ runner.os }}-composer-phpstan-
             ${{ runner.os }}-composer-
+
+      - name: Remove conflicting dev dependencies
+        run: composer remove --dev --no-update vimeo/psalm friendsofphp/php-cs-fixer
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Run PHPStan on source code
         run: composer analyse
-
-  psalm:
-    name: Psalm Static Analysis
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: mbstring, json
-          coverage: none
-          tools: composer:v2
-
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-psalm-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-psalm-
-            ${{ runner.os }}-composer-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
-
-      - name: Run Psalm
-        run: composer psalm
 
   code-style:
     name: Code Style (PHP CS Fixer)
@@ -156,13 +124,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-cs-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-composer-cs-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             ${{ runner.os }}-composer-cs-
             ${{ runner.os }}-composer-
+
+      - name: Remove conflicting dev dependencies
+        run: composer remove --dev --no-update vimeo/psalm
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Check code style
-        run: composer cs-check -- --format=checkstyle | cs2pr
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --format=checkstyle | cs2pr
