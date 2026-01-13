@@ -7,9 +7,9 @@
 
 namespace App\Service;
 
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Behaviour;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Unit;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\NoTest;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Behaviour;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest;
 
 class UserService
 {
@@ -113,9 +113,9 @@ You can also use short names if you import them:
 ```php
 <?php
 
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Behaviour;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Unit;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\NoTest;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Behaviour;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest;
 
 class MyService
 {
@@ -165,7 +165,7 @@ By default, **all public methods** (including magic methods) are checked and req
 ```neon
 services:
     -
-        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        class: ShadowCastiel\PHPStan\TestsCheck\Rule\TestAttributeRule
         arguments:
             checkedClassPatterns:
                 - '*Service'
@@ -207,7 +207,7 @@ You can customize which methods are excluded by configuring the `excludedMethods
 ```neon
 services:
     -
-        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        class: ShadowCastiel\PHPStan\TestsCheck\Rule\TestAttributeRule
         arguments:
             checkedClassPatterns:
                 - '*Service'
@@ -241,8 +241,8 @@ public function validateEmail(): bool {}
 For dynamic paths, use the `TestPath` helper:
 
 ```php
-use ShadowCastiel\PHPStan\TestAttributes\TestPath;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Unit;
+use ShadowCastiel\PHPStan\TestsCheck\TestPath;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
 
 class UserService
 {

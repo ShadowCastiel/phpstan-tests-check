@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ShadowCastiel\PHPStan\TestAttributes\Attribute;
+namespace ShadowCastiel\PHPStan\TestsCheck\Attribute;
 
 use Attribute;
 

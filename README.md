@@ -24,9 +24,9 @@ This extension is compatible with PHPStan's extension manager. Once installed vi
 ## Features
 
 - Enforces that public methods in configured classes have one of the required attributes:
-  - `ShadowCastiel\PHPStan\TestAttributes\Attribute\Behaviour` - Marks a method as requiring a behaviour test (requires file path to feature file)
-  - `ShadowCastiel\PHPStan\TestAttributes\Attribute\Unit` - Marks a method as requiring a unit test (requires file path to PHPUnit test file)
-  - `ShadowCastiel\PHPStan\TestAttributes\Attribute\NoTest` - Marks a method as not requiring a test
+  - `ShadowCastiel\PHPStan\TestsCheck\Attribute\Behaviour` - Marks a method as requiring a behaviour test (requires file path to feature file)
+  - `ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit` - Marks a method as requiring a unit test (requires file path to PHPUnit test file)
+  - `ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest` - Marks a method as not requiring a test
 - **File path validation**: Validates that the specified test files exist
 - **Multiple path formats supported**:
   - Relative paths (relative to the file being analyzed)
@@ -42,9 +42,9 @@ This extension is compatible with PHPStan's extension manager. Once installed vi
 Add one of the three attributes to your public methods. **Note**: `Behaviour` and `Unit` attributes require a file path parameter:
 
 ```php
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Behaviour;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Unit;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\NoTest;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Behaviour;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest;
 
 class UserService
 {
@@ -127,8 +127,8 @@ See the "Configuring Excluded Methods" section below for more details.
 For dynamic path construction, you can use the `TestPath` helper class:
 
 ```php
-use ShadowCastiel\PHPStan\TestAttributes\TestPath;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Unit;
+use ShadowCastiel\PHPStan\TestsCheck\TestPath;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
 
 class UserService
 {
@@ -147,7 +147,7 @@ includes:
 
 services:
     -
-        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        class: ShadowCastiel\PHPStan\TestsCheck\Rule\TestAttributeRule
         arguments:
             checkedClassPatterns:
                 # Using wildcard patterns
@@ -181,7 +181,7 @@ To exclude specific methods from the rule check, provide the `excludedMethods` a
 ```neon
 services:
     -
-        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        class: ShadowCastiel\PHPStan\TestsCheck\Rule\TestAttributeRule
         arguments:
             checkedClassPatterns:
                 - '*Service'

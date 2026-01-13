@@ -8,14 +8,14 @@ parameters:
 
 services:
     -
-        class: ShadowCastiel\PHPStan\TestAttributes\TestAttributesExtension
+        class: ShadowCastiel\PHPStan\TestsCheck\TestsCheckExtension
         tags:
             - phpstan.broker.dynamicMethodReturnTypeExtension
             - phpstan.broker.dynamicStaticMethodReturnTypeExtension
             - phpstan.broker.dynamicFunctionReturnTypeExtension
 
     -
-        class: ShadowCastiel\PHPStan\TestAttributes\Rule\TestAttributeRule
+        class: ShadowCastiel\PHPStan\TestsCheck\Rule\TestAttributeRule
         arguments:
             checkedClassPatterns: []
             excludedMethods: []

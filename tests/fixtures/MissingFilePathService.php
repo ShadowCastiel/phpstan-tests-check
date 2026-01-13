@@ -2,8 +2,8 @@
 
 namespace Tests\Fixtures;
 
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Behaviour;
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Unit;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Behaviour;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
 
 class MissingFilePathService
 {

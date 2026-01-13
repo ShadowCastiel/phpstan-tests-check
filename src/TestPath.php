@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ShadowCastiel\PHPStan\TestAttributes;
+namespace ShadowCastiel\PHPStan\TestsCheck;
 
 /**
  * Helper class for building test file paths.

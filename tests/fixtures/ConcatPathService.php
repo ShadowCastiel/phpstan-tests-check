@@ -2,7 +2,7 @@
 
 namespace Tests\Fixtures;
 
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\Behaviour;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Behaviour;
 
 class ConcatPathService
 {

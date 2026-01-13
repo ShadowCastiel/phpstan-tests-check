@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ShadowCastiel\PHPStan\TestAttributes\Tests\Unit;
+namespace ShadowCastiel\PHPStan\TestsCheck\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use ShadowCastiel\PHPStan\TestAttributes\TestPath;
+use ShadowCastiel\PHPStan\TestsCheck\TestPath;
 
 class TestPathTest extends TestCase
 {

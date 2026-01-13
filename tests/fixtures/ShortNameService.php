@@ -2,7 +2,7 @@
 
 namespace Tests\Fixtures;
 
-use ShadowCastiel\PHPStan\TestAttributes\Attribute\NoTest;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest;
 
 class ShortNameService
 {

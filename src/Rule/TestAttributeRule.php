@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ShadowCastiel\PHPStan\TestAttributes\Rule;
+namespace ShadowCastiel\PHPStan\TestsCheck\Rule;
 
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
@@ -75,11 +75,11 @@ class TestAttributeRule implements Rule
                         'Public method %s::%s() must have one of the following attributes: %s, %s, or %s.',
                         $classReflection->getName(),
                         $node->name->name,
-                        'ShadowCastiel\\PHPStan\\TestAttributes\\Attribute\\Behaviour',
-                        'ShadowCastiel\\PHPStan\\TestAttributes\\Attribute\\Unit',
-                        'ShadowCastiel\\PHPStan\\TestAttributes\\Attribute\\NoTest',
+                        'ShadowCastiel\\PHPStan\\TestsCheck\\Attribute\\Behaviour',
+                        'ShadowCastiel\\PHPStan\\TestsCheck\\Attribute\\Unit',
+                        'ShadowCastiel\\PHPStan\\TestsCheck\\Attribute\\NoTest',
                     ),
-                )->identifier('shadowcastiel.testAttributes.missingAttribute')
+                )->identifier('shadowcastiel.testsCheck.missingAttribute')
                 ->line($node->getStartLine())
                 ->build(),
             ];
@@ -96,7 +96,7 @@ class TestAttributeRule implements Rule
                         $classReflection->getName(),
                         $node->name->name,
                     ),
-                )->identifier('shadowcastiel.testAttributes.missingFilePath')
+                )->identifier('shadowcastiel.testsCheck.missingFilePath')
                 ->line($node->getStartLine())
                 ->build();
             } else {
@@ -119,7 +119,7 @@ class TestAttributeRule implements Rule
                     }
 
                     $errorBuilder = RuleErrorBuilder::message($errorMessage)
-                        ->identifier('shadowcastiel.testAttributes.invalidFilePath')
+                        ->identifier('shadowcastiel.testsCheck.invalidFilePath')
                         ->line($node->getStartLine());
 
                     if ($resolvedPath !== null) {
@@ -168,9 +168,9 @@ class TestAttributeRule implements Rule
     private function getRequiredAttribute(Node\Stmt\ClassMethod $node): ?array
     {
         $requiredAttributes = [
-            'ShadowCastiel\\PHPStan\\TestAttributes\\Attribute\\Behaviour',
-            'ShadowCastiel\\PHPStan\\TestAttributes\\Attribute\\Unit',
-            'ShadowCastiel\\PHPStan\\TestAttributes\\Attribute\\NoTest',
+            'ShadowCastiel\\PHPStan\\TestsCheck\\Attribute\\Behaviour',
+            'ShadowCastiel\\PHPStan\\TestsCheck\\Attribute\\Unit',
+            'ShadowCastiel\\PHPStan\\TestsCheck\\Attribute\\NoTest',
         ];
 
         $requiredAttributeShortNames = ['Behaviour', 'Unit', 'NoTest'];

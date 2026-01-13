@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ShadowCastiel\PHPStan\TestAttributes\Tests;
+namespace ShadowCastiel\PHPStan\TestsCheck\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
