@@ -143,7 +143,7 @@ In your `phpstan.neon`, override the service to configure which classes should b
 
 ```neon
 includes:
-    - vendor/shadowcastiel/phpstan-test-attributes/extension.neon
+    - vendor/shadowcastiel/phpstan-tests-check/extension.neon
 
 services:
     -

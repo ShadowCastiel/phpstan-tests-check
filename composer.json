@@ -1,5 +1,5 @@
 {
-    "name": "shadowcastiel/phpstan-test-attributes",
+    "name": "shadowcastiel/phpstan-tests-check",
     "description": "PHPStan extension for analyzing test attributes",
     "type": "phpstan-extension",
     "license": "MIT",
