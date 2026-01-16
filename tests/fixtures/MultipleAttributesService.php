@@ -7,7 +7,7 @@ use ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest;
 
 class MultipleAttributesService
 {
-    #[NoTest]
+    #[NoTest('Testing multiple attributes')]
     #[Behaviour('features/user_creation.feature')]
     public function multipleAttributes(): void
     {

@@ -6,7 +6,7 @@ use ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest;
 
 class ShortNameService
 {
-    #[NoTest]
+    #[NoTest('Simple method without business logic')]
     public function doSomething(): void
     {
     }

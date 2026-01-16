@@ -10,6 +10,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Throwable;
 
 /**
  * PHPStan rule to check test attributes on public methods.
@@ -66,7 +67,7 @@ class TestAttributeRule implements Rule
         }
 
         $errors = [];
-        $attributeInfo = $this->getRequiredAttribute($node);
+        $attributeInfo = $this->getRequiredAttribute($node, $scope);
 
         if ($attributeInfo === null) {
             return [
@@ -83,6 +84,32 @@ class TestAttributeRule implements Rule
                 ->line($node->getStartLine())
                 ->build(),
             ];
+        }
+
+        if ($attributeInfo['type'] === 'NoTest') {
+            $description = $attributeInfo['description'] ?? null;
+
+            if ($description === null) {
+                $errors[] = RuleErrorBuilder::message(
+                    \sprintf(
+                        'Attribute NoTest on method %s::%s() requires a description parameter.',
+                        $classReflection->getName(),
+                        $node->name->name,
+                    ),
+                )->identifier('shadowcastiel.testsCheck.missingDescription')
+                ->line($node->getStartLine())
+                ->build();
+            } elseif (trim($description) === '') {
+                $errors[] = RuleErrorBuilder::message(
+                    \sprintf(
+                        'Attribute NoTest on method %s::%s() requires a non-empty description explaining why this method does not require a test.',
+                        $classReflection->getName(),
+                        $node->name->name,
+                    ),
+                )->identifier('shadowcastiel.testsCheck.emptyDescription')
+                ->line($node->getStartLine())
+                ->build();
+            }
         }
 
         if ($attributeInfo['type'] === 'Behaviour' || $attributeInfo['type'] === 'Unit') {
@@ -120,7 +147,8 @@ class TestAttributeRule implements Rule
 
                     $errorBuilder = RuleErrorBuilder::message($errorMessage)
                         ->identifier('shadowcastiel.testsCheck.invalidFilePath')
-                        ->line($node->getStartLine());
+                        ->line($node->getStartLine())
+                        ->file($scope->getFile());
 
                     if ($resolvedPath !== null) {
                         $errorBuilder->tip(\sprintf('Expected file: %s', $resolvedPath));
@@ -163,9 +191,9 @@ class TestAttributeRule implements Rule
     }
 
     /**
-     * @return array{type: string, filePath: string|null}|null
+     * @return array{type: string, filePath: string|null, description: string|null}|null
      */
-    private function getRequiredAttribute(Node\Stmt\ClassMethod $node): ?array
+    private function getRequiredAttribute(Node\Stmt\ClassMethod $node, Scope $scope): ?array
     {
         $requiredAttributes = [
             'ShadowCastiel\\PHPStan\\TestsCheck\\Attribute\\Behaviour',
@@ -192,10 +220,12 @@ class TestAttributeRule implements Rule
                 }
 
                 if ($matchedType !== null) {
-                    $filePath = $this->extractFilePathFromAttribute($attr, $matchedType);
+                    $filePath = $this->extractFilePathFromAttribute($attr, $matchedType, $scope);
+                    $description = $this->extractDescriptionFromAttribute($attr, $matchedType);
                     return [
                         'type' => $matchedType,
                         'filePath' => $filePath,
+                        'description' => $description,
                     ];
                 }
             }
@@ -204,7 +234,7 @@ class TestAttributeRule implements Rule
         return null;
     }
 
-    private function extractFilePathFromAttribute(Attribute $attr, string $attributeType): ?string
+    private function extractFilePathFromAttribute(Attribute $attr, string $attributeType, Scope $scope): ?string
     {
         if ($attributeType === 'NoTest') {
             return null;
@@ -215,12 +245,83 @@ class TestAttributeRule implements Rule
         }
 
         $firstArg = $attr->args[0];
+
+        // Handle regular string literals
         if ($firstArg->value instanceof Node\Scalar\String_) {
             return $firstArg->value->value;
         }
 
+        // Handle string concatenation
         if ($firstArg->value instanceof Node\Expr\BinaryOp\Concat) {
             return $this->extractStringFromConcat($firstArg->value);
+        }
+
+        // Handle class-string (e.g., Test::class)
+        if ($firstArg->value instanceof Node\Expr\ClassConstFetch) {
+            return $this->extractFilePathFromClassConst($firstArg->value, $scope);
+        }
+
+        return null;
+    }
+
+    private function extractDescriptionFromAttribute(Attribute $attr, string $attributeType): ?string
+    {
+        if ($attributeType !== 'NoTest') {
+            return null;
+        }
+
+        if (empty($attr->args)) {
+            return null;
+        }
+
+        $firstArg = $attr->args[0];
+
+        // Handle regular string literals
+        if ($firstArg->value instanceof Node\Scalar\String_) {
+            return $firstArg->value->value;
+        }
+
+        // Handle string concatenation
+        if ($firstArg->value instanceof Node\Expr\BinaryOp\Concat) {
+            return $this->extractStringFromConcat($firstArg->value);
+        }
+
+        return null;
+    }
+
+    private function extractFilePathFromClassConst(Node\Expr\ClassConstFetch $classConst, Scope $scope): ?string
+    {
+        // Only handle ::class constants
+        if (!$classConst->name instanceof Node\Identifier || $classConst->name->name !== 'class') {
+            return null;
+        }
+
+        // Get the class name
+        if ($classConst->class instanceof Node\Name) {
+            $className = $classConst->class->toString();
+
+            // Try to resolve the class using PHPStan's reflection
+            try {
+                // Handle relative class names (resolve imports)
+                if (!str_contains($className, '\\')) {
+                    // Try to resolve via scope
+                    $resolvedName = $scope->resolveName($classConst->class);
+                    $className = $resolvedName;
+                }
+
+                if ($scope->hasClass($className)) {
+                    $classReflection = $scope->getClassReflection($className);
+                    if ($classReflection !== null) {
+                        $fileName = $classReflection->getFileName();
+                        if ($fileName !== null) {
+                            return $fileName;
+                        }
+                    }
+                }
+            } catch (Throwable $e) {
+                // If reflection fails, return null
+                return null;
+            }
         }
 
         return null;

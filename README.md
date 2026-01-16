@@ -26,7 +26,7 @@ This extension is compatible with PHPStan's extension manager. Once installed vi
 - Enforces that public methods in configured classes have one of the required attributes:
   - `ShadowCastiel\PHPStan\TestsCheck\Attribute\Behaviour` - Marks a method as requiring a behaviour test (requires file path to feature file)
   - `ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit` - Marks a method as requiring a unit test (requires file path to PHPUnit test file)
-  - `ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest` - Marks a method as not requiring a test
+  - `ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest` - Marks a method as not requiring a test (requires non-empty description explaining why)
 - **File path validation**: Validates that the specified test files exist
 - **Multiple path formats supported**:
   - Relative paths (relative to the file being analyzed)
@@ -69,8 +69,8 @@ class UserService
         // This method requires a unit test
     }
 
-    // NoTest doesn't require a file path
-    #[NoTest]
+    // NoTest requires a description explaining why no test is needed
+    #[NoTest('Simple getter that returns configuration array, no business logic to test')]
     public function getConfig(): array
     {
         // This method doesn't require a test
@@ -80,7 +80,7 @@ class UserService
 
 #### File Path Formats
 
-The `Behaviour` and `Unit` attributes accept file paths in three formats:
+The `Behaviour` and `Unit` attributes accept file paths in multiple formats:
 
 1. **Relative paths** (relative to the file being analyzed):
    ```php
@@ -100,6 +100,15 @@ The `Behaviour` and `Unit` attributes accept file paths in three formats:
    #[Behaviour('/var/www/project/features/user_creation.feature')]
    #[Unit('/var/www/project/tests/Unit/UserServiceTest.php')]
    ```
+
+4. **Class-strings** (using `::class` syntax - PHPStorm navigable):
+   ```php
+   use Tests\Unit\UserServiceTest;
+   
+   #[Unit(UserServiceTest::class)]
+   public function validateEmail(): bool {}
+   ```
+   This is particularly useful in IDEs like PHPStorm, which will recognize the class reference and provide navigation, refactoring support, and autocomplete.
 
 PHPStan will validate that the specified files exist and report an error if they don't.
 
@@ -124,7 +133,21 @@ See the "Configuring Excluded Methods" section below for more details.
 - **Use Ctrl/Cmd + Click** (or Cmd + Click on Mac) on the path string to open the file
 - **See file references** in IDE tooltips and autocomplete
 
-For dynamic path construction, you can use the `TestPath` helper class:
+**Best Practice for PHPStorm**: Use class-strings with `::class` syntax for optimal IDE integration:
+
+```php
+use Tests\Unit\UserServiceTest;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
+
+class UserService
+{
+    // ✨ Best: Full IDE support (navigation, refactoring, autocomplete)
+    #[Unit(UserServiceTest::class)]
+    public function validateEmail(): bool {}
+}
+```
+
+For dynamic path construction, you can also use the `TestPath` helper class:
 
 ```php
 use ShadowCastiel\PHPStan\TestsCheck\TestPath;

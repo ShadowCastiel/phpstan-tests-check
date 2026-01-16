@@ -6,7 +6,7 @@ use ShadowCastiel\PHPStan\TestsCheck\Attribute\NoTest;
 
 class ExcludedMethodsService
 {
-    #[NoTest]
+    #[NoTest('Simple public method without business logic')]
     public function publicMethod(): void
     {
     }

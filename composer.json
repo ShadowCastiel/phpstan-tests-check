@@ -48,6 +48,10 @@
         "allow-plugins": {
             "phpstan/extension-installer": true
         }
-    }
+    },
+    "repositories": [{
+        "name": "private-packagist",
+        "type": "composer",
+        "url": "https://repo.packagist.com/shadowcastiel/"
+    }]
 }
-

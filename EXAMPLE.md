@@ -34,8 +34,8 @@ class UserService
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    // ✅ Valid - has NoTest attribute (no file path required)
-    #[NoTest]
+    // ✅ Valid - has NoTest attribute with description
+    #[NoTest('Simple getter that returns configuration array, no business logic to test')]
     public function getConfig(): array
     {
         return ['version' => '1.0'];
@@ -48,10 +48,18 @@ class UserService
         // Implementation
     }
 
-    // ❌ Invalid - Behaviour attribute missing file path
-    // PHPStan will report: "Attribute Behaviour on method UserService::updateUser() requires a filePath parameter."
-    #[Behaviour]
+    // ❌ Invalid - NoTest attribute missing description
+    // PHPStan will report: "Attribute NoTest on method UserService::updateUser() requires a description parameter."
+    #[NoTest]
     public function updateUser(int $userId, array $data): void
+    {
+        // Implementation
+    }
+
+    // ❌ Invalid - NoTest attribute with empty description
+    // PHPStan will report: "Attribute NoTest on method UserService::helper() requires a non-empty description..."
+    #[NoTest('')]
+    public function helper(): void
     {
         // Implementation
     }
@@ -127,6 +135,22 @@ class MyService
 ```
 
 ## File Path Examples
+
+### Class-Strings (Recommended for IDEs)
+
+**Best practice**: Use `::class` syntax for full IDE support (navigation, refactoring, autocomplete):
+
+```php
+use Tests\Unit\UserServiceTest;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
+
+class UserService
+{
+    // ✨ Best: PHPStorm recognizes this and provides full IDE support
+    #[Unit(UserServiceTest::class)]
+    public function validateEmail(): bool {}
+}
+```
 
 ### Relative Paths
 
@@ -223,7 +247,30 @@ services:
 
 **File paths in attributes are automatically clickable in modern IDEs!**
 
-In PhpStorm, VS Code (with PHP extensions), and other modern IDEs:
+### Best Practice: Use Class-Strings
+
+For **optimal PHPStorm integration**, use the `::class` syntax:
+
+```php
+use Tests\Unit\UserServiceTest;
+use ShadowCastiel\PHPStan\TestsCheck\Attribute\Unit;
+
+class UserService
+{
+    #[Unit(UserServiceTest::class)]
+    //     ^^^^^^^^^^^^^^^^^^^^^^^
+    //     ✨ PHPStorm provides:
+    //     - Navigate to test class (Ctrl/Cmd + Click)
+    //     - Refactoring support (rename, move)
+    //     - Autocomplete when typing
+    //     - Find usages
+    public function validateEmail(): bool {}
+}
+```
+
+### Alternative: String Paths
+
+In PhpStorm, VS Code (with PHP extensions), and other modern IDEs, string paths are also clickable:
 
 - **Click directly on file paths** in attribute parameters to navigate to the test files
 - **Use Ctrl/Cmd + Click** (or Cmd + Click on Mac) on the path string to open the file

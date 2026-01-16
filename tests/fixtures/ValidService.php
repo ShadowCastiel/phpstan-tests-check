@@ -19,7 +19,7 @@ class ValidService
         return true;
     }
 
-    #[NoTest]
+    #[NoTest('Simple getter that returns configuration array, no business logic to test')]
     public function getConfig(): array
     {
         return [];

@@ -11,7 +11,9 @@ use Attribute;
  *
  * @psalm-api
  *
- * @param string $filePath Path to the feature file (relative, absolute, or @root/ prefix)
+ * @param string $filePath Path to the feature file (relative, absolute, @root/ prefix, or class-string)
+ *
+ * @phpstan-param string|class-string $filePath
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class Behaviour
